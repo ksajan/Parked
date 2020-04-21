@@ -1,57 +1,58 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Constants, Location, Permissions } from 'expo';
+import React, { Component } from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  TouchableOpacity
+} from "react-native";
 
-class FindMe extends Component {
-	state = {
-		location: null,
-		errorMessage: null
-	};
+export default class App extends Component {
+  state = {
+    location: null
+  };
 
-	findCurrentLocation = () => {
-		navigator.geolocation.getCurrentPosition(
-			position => {
-				const latitude = JSON.stringify(position.coords.latitude);
-				const longitude = JSON.stringify(position.coords.longitude);
+  findCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const location = JSON.stringify(position);
 
-				this.setState({
-					latitude,
-					longitude
-				});
-			},
-			{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-		);
-	};
+        this.setState({ location });
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
 
-	findCurrentLocationAsync = async () => {
-		let { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-		if (status !== 'granted') {
-			this.setState({
-				errorMessage: 'Permission to access location was denied'
-			});
-		}
-
-		let location = await Location.getCurrentPositionAsync({});
-		this.setState({ location });
-	};
-
-	render() {
-		let text = '';
-		if (this.state.errorMessage) {
-			text = this.state.errorMessage;
-		} else if (this.state.location) {
-			text = JSON.stringify(this.state.location);
-		}
-		return (
-			<View>
-				<TouchableOpacity onPress={this.findCurrentLocationAsync}>
-					<Text> Where am I? </Text>
-					<Text>{text}</Text>
-				</TouchableOpacity>
-			</View>
-		);
-	}
+  render() {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPress={this.findCoordinates}>
+          <Text style={styles.welcome}>Find My Coords?</Text>
+          <Text>Location: {this.state.location}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 }
 
-export default FindMe;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10
+  },
+  instructions: {
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 5
+  }
+});

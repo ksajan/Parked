@@ -1,58 +1,60 @@
-import React, { Component } from "react";
+import React, {useState} from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
-  Alert,
+  Button,
+  TextInput,
+  Image,
+  TouchableHighlight,
   TouchableOpacity
-} from "react-native";
+} from 'react-native';
+import SignUpForm from './components/mycomponents/form.js';
 
-export default class App extends Component {
-  state = {
-    location: null
-  };
-
-  findCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const location = JSON.stringify(position);
-
-        this.setState({ location });
-      },
-      error => Alert.alert(error.message),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-  };
-
+export default class App extends React.Component {
   render() {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={this.findCoordinates}>
-          <Text style={styles.welcome}>Find My Coords?</Text>
-          <Text>Location: {this.state.location}</Text>
-        </TouchableOpacity>
+    return (<View style={styles.container}>
+      <View style={styles.content}>
+        <Image source={require('./assets/images/person/2x/baseline_person_black_18dp.png')}/>
       </View>
-    );
+      <View style={styles.inputView}>
+        <TextInput placeholder="First Name" style={styles.inputText} onChangeText={text => this.setState({name: first})}/>
+      </View>
+
+      <View style={styles.inputView}>
+        <TextInput placeholder="Last Name" style={styles.inputText} onChangeText={text => this.setState({name: last})}/>
+      </View>
+
+      <View style={styles.inputView}>
+        <TextInput placeholder="Email" style={styles.inputText} onChangeText={text => this.setState({email: text})}/>
+      </View>
+
+      <View style={styles.inputView}>
+        <TextInput secureTextEntry={true} placeholder="Password" style={styles.inputText} onChangeText={text => this.setState({password: text})}/>
+
+      </View>
+    </View>);
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: 'rgba(63,117,222,1)',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
+  content: {
+    marginTop: 300,
+    alignItems: 'center',
+    marginBottom: 50
   },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
+  inputView: {
+    backgroundColor: '#ffffff',
+    width: '80%',
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+    padding: 20,
+    marginLeft: 40,
+    alignItems: 'center'
   }
 });
